@@ -46,6 +46,12 @@
           {{ Math.round(weekStats.totalMarisaPercentage) }}%
         </p>
         <p class="text-xs text-pink-600">promedio semanal</p>
+        <div class="flex items-center space-x-1 mt-2">
+          <Heart class="w-3 h-3 text-pink-500" />
+          <p class="text-sm font-medium text-pink-700">
+            {{ Math.round(weekStats.totalMarisaHours * 10) / 10 }} horas efectivas
+          </p>
+        </div>
       </div>
       
       <div class="bg-gradient-to-br from-red-100 to-pink-100 rounded-xl p-4">
@@ -57,6 +63,12 @@
           {{ Math.round(weekStats.totalSaraPercentage) }}%
         </p>
         <p class="text-xs text-red-600">promedio semanal</p>
+        <div class="flex items-center space-x-1 mt-2">
+          <Heart class="w-3 h-3 text-red-500" />
+          <p class="text-sm font-medium text-red-700">
+            {{ Math.round(weekStats.totalSaraHours * 10) / 10 }} horas efectivas
+          </p>
+        </div>
       </div>
     </div>
 
@@ -93,28 +105,36 @@
               <p class="text-lg font-bold text-pink-700">
                 {{ Math.round(dayStats.marisaPercentage) }}%
               </p>
+              <div class="flex items-center justify-center space-x-1">
+                <Heart class="w-2 h-2 text-pink-500" />
+                <p class="text-xs text-pink-600">{{ Math.round(dayStats.marisaHours * 10) / 10 }} horas efectivas</p>
+              </div>
             </div>
             <div class="text-center">
               <p class="text-xs text-red-600">Sara</p>
               <p class="text-lg font-bold text-red-700">
                 {{ Math.round(dayStats.saraPercentage) }}%
               </p>
+              <div class="flex items-center justify-center space-x-1">
+                <Heart class="w-2 h-2 text-red-500" />
+                <p class="text-xs text-red-600">{{ Math.round(dayStats.saraHours * 10) / 10 }} horas efectivas</p>
+              </div>
             </div>
           </div>
           
           <!-- Category breakdown -->
           <div class="flex justify-between text-xs text-gray-600">
             <span v-if="dayStats.categoryBreakdown[EventCategory.DORMIR] > 0">
-              😴 {{ dayStats.categoryBreakdown[EventCategory.DORMIR] }}h
+              😴 {{ Math.round(dayStats.categoryBreakdown[EventCategory.DORMIR] * 10) / 10 }}h
             </span>
             <span v-if="dayStats.categoryBreakdown[EventCategory.LABORAL] > 0">
-              💼 {{ dayStats.categoryBreakdown[EventCategory.LABORAL] }}h
+              💼 {{ Math.round(dayStats.categoryBreakdown[EventCategory.LABORAL] * 10) / 10 }}h
             </span>
             <span v-if="dayStats.categoryBreakdown[EventCategory.GYM] > 0">
-              💪 {{ dayStats.categoryBreakdown[EventCategory.GYM] }}h
+              💪 {{ Math.round(dayStats.categoryBreakdown[EventCategory.GYM] * 10) / 10 }}h
             </span>
             <span v-if="dayStats.categoryBreakdown[EventCategory.EFICAZ] > 0">
-              ❤️ {{ dayStats.categoryBreakdown[EventCategory.EFICAZ] }}h
+              ❤️ {{ Math.round(dayStats.categoryBreakdown[EventCategory.EFICAZ] * 10) / 10 }}h
             </span>
           </div>
         </div>
@@ -124,15 +144,15 @@
     <!-- Day Detail Modal -->
     <div 
       v-if="selectedDayStats" 
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm"
       @click="selectedDayStats = null"
     >
       <div 
-        class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+        class="bg-white rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
         @click.stop
       >
         <!-- Modal Header -->
-        <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 rounded-t-2xl">
+        <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 rounded-t-lg">
           <div class="flex items-center justify-between">
             <div>
               <h2 class="text-xl font-bold">
@@ -142,7 +162,7 @@
                 {{ format(selectedDayStats.date, 'dd MMMM yyyy', { locale: es }) }}
               </p>
             </div>
-            <button @click="selectedDayStats = null" class="text-white hover:text-pink-200">
+            <button @click="selectedDayStats = null" class="text-white hover:text-pink-200 transition-colors duration-200">
               <X class="w-6 h-6" />
             </button>
           </div>
@@ -179,17 +199,40 @@
                 class="border-l-4 pl-3 py-2 rounded-r-lg"
                 :class="getEventBorderColor(event)"
               >
-                <h4 class="font-medium text-gray-800 text-sm">{{ event.title }}</h4>
-                <p class="text-xs text-gray-600">
-                  {{ format(event.startDate, 'HH:mm') }} - {{ format(event.endDate, 'HH:mm') }}
-                </p>
-                <div class="flex items-center space-x-2 mt-1">
-                  <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
-                    {{ event.category }}
-                  </span>
-                  <span class="text-xs px-2 py-1 rounded-full bg-pink-100 text-pink-700">
-                    {{ event.partner }}
-                  </span>
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <h4 class="font-medium text-gray-800 text-sm">{{ event.title }}</h4>
+                    <p class="text-xs text-gray-600">
+                      {{ format(event.startDate, 'HH:mm') }} - {{ format(event.endDate, 'HH:mm') }}
+                      <span class="ml-2 text-xs font-medium text-gray-500">
+                        ({{ getEventDuration(event) }}h)
+                      </span>
+                    </p>
+                    <div class="flex items-center space-x-2 mt-1">
+                      <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+                        {{ event.category }}
+                      </span>
+                      <span class="text-xs px-2 py-1 rounded-full bg-pink-100 text-pink-700">
+                        {{ event.partner }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-1 ml-2">
+                    <button 
+                      @click="editEvent(event)"
+                      class="text-gray-400 hover:text-blue-500 transition-colors duration-200"
+                      title="Editar evento"
+                    >
+                      <Edit class="w-3 h-3" />
+                    </button>
+                    <button 
+                      @click="deleteEvent(event.id)"
+                      class="text-gray-400 hover:text-red-500 transition-colors duration-200"
+                      title="Eliminar evento"
+                    >
+                      <Trash2 class="w-3 h-3" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -206,7 +249,9 @@ import {
   ChevronLeft, 
   ChevronRight, 
   Heart,
-  X
+  X,
+  Edit,
+  Trash2
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
 import { EventCategory, Partner, DayStats } from '@/types'
@@ -251,6 +296,22 @@ const getEventBorderColor = (event: any) => {
     return 'border-red-400 bg-red-50'
   } else {
     return 'border-purple-400 bg-purple-50'
+  }
+}
+
+const getEventDuration = (event: any) => {
+  const duration = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+  return Math.round(duration * 10) / 10
+}
+
+const editEvent = (event: any) => {
+  // Por ahora, mostrar un alert indicando que se debe ir a la vista diaria para editar
+  alert('Para editar eventos, ve a la vista diaria del día correspondiente')
+}
+
+const deleteEvent = (eventId: string) => {
+  if (confirm('¿Estás seguro de que quieres eliminar este evento?')) {
+    eventsStore.deleteEvent(eventId)
   }
 }
 </script> 

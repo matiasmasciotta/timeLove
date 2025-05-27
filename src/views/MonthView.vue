@@ -42,9 +42,15 @@
           <span class="text-sm font-medium text-pink-800">Marisa</span>
         </div>
         <p class="text-2xl font-bold text-pink-700">
-          {{ monthStats.totalMarisaHours }}h
+          {{ Math.round(monthlyMarisaPercentage) }}%
         </p>
-        <p class="text-xs text-pink-600">total del mes</p>
+        <p class="text-xs text-pink-600">del tiempo total</p>
+        <div class="flex items-center space-x-1 mt-2">
+          <Heart class="w-3 h-3 text-pink-500" />
+          <p class="text-sm font-medium text-pink-700">
+            {{ Math.round(monthStats.totalMarisaHours * 10) / 10 }} horas efectivas
+          </p>
+        </div>
       </div>
       
       <div class="bg-gradient-to-br from-red-100 to-pink-100 rounded-xl p-4">
@@ -53,31 +59,39 @@
           <span class="text-sm font-medium text-red-800">Sara</span>
         </div>
         <p class="text-2xl font-bold text-red-700">
-          {{ monthStats.totalSaraHours }}h
+          {{ Math.round(monthlySaraPercentage) }}%
         </p>
-        <p class="text-xs text-red-600">total del mes</p>
+        <p class="text-xs text-red-600">del tiempo total</p>
+        <div class="flex items-center space-x-1 mt-2">
+          <Heart class="w-3 h-3 text-red-500" />
+          <p class="text-sm font-medium text-red-700">
+            {{ Math.round(monthStats.totalSaraHours * 10) / 10 }} horas efectivas
+          </p>
+        </div>
       </div>
     </div>
 
-    <!-- Monthly Percentage -->
+    <!-- Monthly Summary -->
     <div class="bg-white rounded-xl p-4 shadow-sm">
-      <h3 class="text-lg font-semibold text-gray-800 mb-4">Distribución mensual</h3>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="text-center">
-          <div class="w-20 h-20 mx-auto mb-2 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center">
-            <span class="text-white font-bold text-lg">
-              {{ Math.round(monthlyMarisaPercentage) }}%
-            </span>
-          </div>
-          <p class="text-sm font-medium text-pink-700">Marisa</p>
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Resumen mensual</h3>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="text-center p-3 bg-pink-50 rounded-lg">
+          <p class="text-sm text-pink-600">Total Marisa</p>
+          <p class="text-xl font-bold text-pink-700">
+            {{ Math.round(monthStats.allMarisaHours * 10) / 10 }}h
+          </p>
         </div>
-        <div class="text-center">
-          <div class="w-20 h-20 mx-auto mb-2 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
-            <span class="text-white font-bold text-lg">
-              {{ Math.round(monthlySaraPercentage) }}%
-            </span>
-          </div>
-          <p class="text-sm font-medium text-red-700">Sara</p>
+        <div class="text-center p-3 bg-red-50 rounded-lg">
+          <p class="text-sm text-red-600">Total Sara</p>
+          <p class="text-xl font-bold text-red-700">
+            {{ Math.round(monthStats.allSaraHours * 10) / 10 }}h
+          </p>
+        </div>
+        <div class="text-center p-3 bg-gray-50 rounded-lg">
+          <p class="text-sm text-gray-600">Total Mes</p>
+          <p class="text-xl font-bold text-gray-700">
+            {{ Math.round(monthStats.totalHours * 10) / 10 }}h
+          </p>
         </div>
       </div>
     </div>
@@ -117,12 +131,20 @@
               <p class="text-lg font-bold text-pink-700">
                 {{ Math.round(week.totalMarisaPercentage) }}%
               </p>
+              <div class="flex items-center justify-center space-x-1">
+                <Heart class="w-2 h-2 text-pink-500" />
+                <p class="text-xs text-pink-600">{{ Math.round(week.totalMarisaHours * 10) / 10 }} horas efectivas</p>
+              </div>
             </div>
             <div class="text-center p-2 bg-red-50 rounded">
               <p class="text-xs text-red-600">Sara</p>
               <p class="text-lg font-bold text-red-700">
                 {{ Math.round(week.totalSaraPercentage) }}%
               </p>
+              <div class="flex items-center justify-center space-x-1">
+                <Heart class="w-2 h-2 text-red-500" />
+                <p class="text-xs text-red-600">{{ Math.round(week.totalSaraHours * 10) / 10 }} horas efectivas</p>
+              </div>
             </div>
           </div>
         </div>
@@ -132,15 +154,15 @@
     <!-- Week Detail Modal -->
     <div 
       v-if="selectedWeekStats" 
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50 backdrop-blur-sm"
       @click="selectedWeekStats = null"
     >
       <div 
-        class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        class="bg-white rounded-lg shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
         @click.stop
       >
         <!-- Modal Header -->
-        <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 rounded-t-2xl">
+        <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-6 rounded-t-lg">
           <div class="flex items-center justify-between">
             <div>
               <h2 class="text-xl font-bold">Detalle semanal</h2>
@@ -149,7 +171,7 @@
                 {{ format(selectedWeekStats.weekEnd, 'dd MMM yyyy', { locale: es }) }}
               </p>
             </div>
-            <button @click="selectedWeekStats = null" class="text-white hover:text-pink-200">
+            <button @click="selectedWeekStats = null" class="text-white hover:text-pink-200 transition-colors duration-200">
               <X class="w-6 h-6" />
             </button>
           </div>
@@ -164,12 +186,22 @@
               <p class="text-xl font-bold text-pink-700">
                 {{ Math.round(selectedWeekStats.totalMarisaPercentage) }}%
               </p>
+              <p class="text-xs text-pink-600">del tiempo total</p>
+              <div class="flex items-center justify-center space-x-1 mt-1">
+                <Heart class="w-2 h-2 text-pink-500" />
+                <p class="text-xs text-pink-600">{{ Math.round(selectedWeekStats.totalMarisaHours * 10) / 10 }}h efectivas</p>
+              </div>
             </div>
             <div class="text-center p-3 bg-red-50 rounded-lg">
               <p class="text-sm text-red-600">Sara</p>
               <p class="text-xl font-bold text-red-700">
                 {{ Math.round(selectedWeekStats.totalSaraPercentage) }}%
               </p>
+              <p class="text-xs text-red-600">del tiempo total</p>
+              <div class="flex items-center justify-center space-x-1 mt-1">
+                <Heart class="w-2 h-2 text-red-500" />
+                <p class="text-xs text-red-600">{{ Math.round(selectedWeekStats.totalSaraHours * 10) / 10 }}h efectivas</p>
+              </div>
             </div>
           </div>
 
@@ -195,12 +227,20 @@
                     <p class="text-sm font-bold text-pink-700">
                       {{ Math.round(dayStats.marisaPercentage) }}%
                     </p>
+                    <div class="flex items-center justify-center space-x-1">
+                      <Heart class="w-1 h-1 text-pink-500" />
+                      <p class="text-xs text-pink-600">{{ Math.round(dayStats.marisaHours * 10) / 10 }}h</p>
+                    </div>
                   </div>
                   <div class="text-center">
                     <p class="text-xs text-red-600">S</p>
                     <p class="text-sm font-bold text-red-700">
                       {{ Math.round(dayStats.saraPercentage) }}%
                     </p>
+                    <div class="flex items-center justify-center space-x-1">
+                      <Heart class="w-1 h-1 text-red-500" />
+                      <p class="text-xs text-red-600">{{ Math.round(dayStats.saraHours * 10) / 10 }}h</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -232,13 +272,13 @@ const selectedWeekStats = ref<WeekStats | null>(null)
 const monthStats = computed(() => eventsStore.getMonthStats(selectedMonth.value))
 
 const monthlyMarisaPercentage = computed(() => {
-  const total = monthStats.value.totalMarisaHours + monthStats.value.totalSaraHours
-  return total > 0 ? (monthStats.value.totalMarisaHours / total) * 100 : 0
+  const total = monthStats.value.allMarisaHours + monthStats.value.allSaraHours
+  return total > 0 ? (monthStats.value.allMarisaHours / total) * 100 : 0
 })
 
 const monthlySaraPercentage = computed(() => {
-  const total = monthStats.value.totalMarisaHours + monthStats.value.totalSaraHours
-  return total > 0 ? (monthStats.value.totalSaraHours / total) * 100 : 0
+  const total = monthStats.value.allMarisaHours + monthStats.value.allSaraHours
+  return total > 0 ? (monthStats.value.allSaraHours / total) * 100 : 0
 })
 
 const previousMonth = () => {

@@ -102,6 +102,8 @@ export const useEventsStore = defineStore('events', () => {
     const dayEvents = getEventsForDay(date)
     let marisaHours = 0
     let saraHours = 0
+    let marisaEffectiveHours = 0  // Solo TIEMPO EFICAZ
+    let saraEffectiveHours = 0    // Solo TIEMPO EFICAZ
     const categoryBreakdown = {
       [EventCategory.DORMIR]: 0,
       [EventCategory.LABORAL]: 0,
@@ -110,19 +112,35 @@ export const useEventsStore = defineStore('events', () => {
     }
 
     dayEvents.forEach(event => {
-      const hours = differenceInHours(event.endDate, event.startDate)
+      const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
       
       // Calcular horas por categoría
       categoryBreakdown[event.category] += hours
 
-      // Calcular horas por pareja
+      // Calcular horas totales por pareja (todas las categorías)
       if (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS) {
         marisaHours += hours
         saraHours += hours
+        
+        // Solo contar TIEMPO EFICAZ como "horas efectivas"
+        if (event.category === EventCategory.EFICAZ) {
+          marisaEffectiveHours += hours
+          saraEffectiveHours += hours
+        }
       } else if (event.partner === Partner.MARISA) {
         marisaHours += hours
+        
+        // Solo contar TIEMPO EFICAZ como "horas efectivas"
+        if (event.category === EventCategory.EFICAZ) {
+          marisaEffectiveHours += hours
+        }
       } else if (event.partner === Partner.SARA) {
         saraHours += hours
+        
+        // Solo contar TIEMPO EFICAZ como "horas efectivas"
+        if (event.category === EventCategory.EFICAZ) {
+          saraEffectiveHours += hours
+        }
       }
     })
 
@@ -134,6 +152,9 @@ export const useEventsStore = defineStore('events', () => {
       date,
       marisaPercentage,
       saraPercentage,
+      marisaHours: marisaEffectiveHours,  // Solo horas efectivas (TIEMPO EFICAZ)
+      saraHours: saraEffectiveHours,      // Solo horas efectivas (TIEMPO EFICAZ)
+      totalHours,
       events: dayEvents,
       categoryBreakdown
     }
@@ -147,15 +168,46 @@ export const useEventsStore = defineStore('events', () => {
     const days = eachDayOfInterval({ start: weekStart, end: weekEnd })
       .map(day => getDayStats(day))
 
-    const totalMarisaPercentage = days.reduce((sum, day) => sum + day.marisaPercentage, 0) / 7
-    const totalSaraPercentage = days.reduce((sum, day) => sum + day.saraPercentage, 0) / 7
+    // Sumar horas efectivas de todos los días (ya filtradas por TIEMPO EFICAZ)
+    const totalMarisaHours = days.reduce((sum, day) => sum + day.marisaHours, 0)
+    const totalSaraHours = days.reduce((sum, day) => sum + day.saraHours, 0)
+    
+    // Para el porcentaje, usar todas las horas (no solo efectivas)
+    const allMarisaHours = days.reduce((sum, day) => {
+      return sum + day.events.reduce((eventSum, event) => {
+        if (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS) {
+          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+        } else if (event.partner === Partner.MARISA) {
+          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+        }
+        return eventSum
+      }, 0)
+    }, 0)
+    
+    const allSaraHours = days.reduce((sum, day) => {
+      return sum + day.events.reduce((eventSum, event) => {
+        if (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS) {
+          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+        } else if (event.partner === Partner.SARA) {
+          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+        }
+        return eventSum
+      }, 0)
+    }, 0)
+
+    const totalHours = allMarisaHours + allSaraHours
+    const totalMarisaPercentage = totalHours > 0 ? (allMarisaHours / totalHours) * 100 : 0
+    const totalSaraPercentage = totalHours > 0 ? (allSaraHours / totalHours) * 100 : 0
 
     return {
       weekStart,
       weekEnd,
       days,
       totalMarisaPercentage,
-      totalSaraPercentage
+      totalSaraPercentage,
+      totalMarisaHours,  // Solo horas efectivas
+      totalSaraHours,    // Solo horas efectivas
+      totalHours
     }
   }
 
@@ -169,32 +221,42 @@ export const useEventsStore = defineStore('events', () => {
       { weekStartsOn: 1 }
     ).map(weekStart => getWeekStats(weekStart))
 
-    const totalMarisaHours = weeks.reduce((sum, week) => 
-      sum + week.days.reduce((daySum, day) => 
-        daySum + day.events.reduce((eventSum, event) => {
-          if (event.partner === Partner.MARISA || 
-              (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS)) {
-            return eventSum + differenceInHours(event.endDate, event.startDate)
+    // Sumar horas efectivas de todas las semanas (ya filtradas por TIEMPO EFICAZ)
+    const totalMarisaHours = weeks.reduce((sum, week) => sum + week.totalMarisaHours, 0)
+    const totalSaraHours = weeks.reduce((sum, week) => sum + week.totalSaraHours, 0)
+    
+    // Para el total de horas, calcular todas las horas de todos los eventos del mes
+    let allMarisaHours = 0
+    let allSaraHours = 0
+    
+    weeks.forEach(week => {
+      week.days.forEach(day => {
+        day.events.forEach(event => {
+          const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+          
+          if (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS) {
+            allMarisaHours += hours
+            allSaraHours += hours
+          } else if (event.partner === Partner.MARISA) {
+            allMarisaHours += hours
+          } else if (event.partner === Partner.SARA) {
+            allSaraHours += hours
           }
-          return eventSum
-        }, 0), 0), 0)
-
-    const totalSaraHours = weeks.reduce((sum, week) => 
-      sum + week.days.reduce((daySum, day) => 
-        daySum + day.events.reduce((eventSum, event) => {
-          if (event.partner === Partner.SARA || 
-              (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS)) {
-            return eventSum + differenceInHours(event.endDate, event.startDate)
-          }
-          return eventSum
-        }, 0), 0), 0)
+        })
+      })
+    })
+    
+    const totalHours = allMarisaHours + allSaraHours
 
     return {
       month: date.getMonth(),
       year: date.getFullYear(),
       weeks,
-      totalMarisaHours,
-      totalSaraHours
+      totalMarisaHours,  // Solo horas efectivas
+      totalSaraHours,    // Solo horas efectivas
+      totalHours,        // Todas las horas
+      allMarisaHours,    // Todas las horas de Marisa (para porcentajes)
+      allSaraHours       // Todas las horas de Sara (para porcentajes)
     }
   }
 

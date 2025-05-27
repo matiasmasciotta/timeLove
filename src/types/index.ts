@@ -37,6 +37,9 @@ export interface DayStats {
   date: Date
   marisaPercentage: number
   saraPercentage: number
+  marisaHours: number // Solo horas de TIEMPO EFICAZ
+  saraHours: number   // Solo horas de TIEMPO EFICAZ
+  totalHours: number  // Todas las horas de todas las categorías
   events: TimeEvent[]
   categoryBreakdown: {
     [key in EventCategory]: number
@@ -49,12 +52,18 @@ export interface WeekStats {
   days: DayStats[]
   totalMarisaPercentage: number
   totalSaraPercentage: number
+  totalMarisaHours: number // Solo horas de TIEMPO EFICAZ
+  totalSaraHours: number   // Solo horas de TIEMPO EFICAZ
+  totalHours: number       // Todas las horas de todas las categorías
 }
 
 export interface MonthStats {
   month: number
   year: number
   weeks: WeekStats[]
-  totalMarisaHours: number
-  totalSaraHours: number
+  totalMarisaHours: number // Solo horas de TIEMPO EFICAZ
+  totalSaraHours: number   // Solo horas de TIEMPO EFICAZ
+  totalHours: number       // Todas las horas de todas las categorías
+  allMarisaHours: number   // Todas las horas de Marisa (para porcentajes)
+  allSaraHours: number     // Todas las horas de Sara (para porcentajes)
 } 
