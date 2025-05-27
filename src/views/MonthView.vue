@@ -261,7 +261,7 @@ import {
   X
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
-import { WeekStats } from '@/types'
+import { EventCategory, type WeekStats } from '@/types'
 import { format, addMonths, subMonths, startOfToday, isSameDay } from 'date-fns'
 import { es } from 'date-fns/locale'
 

@@ -254,7 +254,7 @@ import {
   Trash2
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
-import { EventCategory, Partner, DayStats } from '@/types'
+import { EventCategory, Partner, type DayStats } from '@/types'
 import { format, addWeeks, subWeeks, startOfToday, isSameDay } from 'date-fns'
 import { es } from 'date-fns/locale'
 

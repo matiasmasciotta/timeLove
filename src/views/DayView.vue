@@ -349,13 +349,13 @@ import {
   X
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
-import { EventCategory, Partner, TimeType } from '@/types'
+import { EventCategory, Partner, TimeType, type TimeEvent } from '@/types'
 import { format, addDays, subDays, startOfToday } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 const eventsStore = useEventsStore()
 const selectedDate = ref(startOfToday())
-const editingEvent = ref(null)
+const editingEvent = ref<TimeEvent | null>(null)
 const showEditModal = ref(false)
 
 // Form data para edición
