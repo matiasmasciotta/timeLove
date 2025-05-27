@@ -6,7 +6,7 @@ export interface TimeEvent {
   endDate: Date
   category: EventCategory
   timeType: TimeType
-  partner?: Partner
+  partner: Partner
 }
 
 export enum EventCategory {

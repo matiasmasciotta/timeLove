@@ -254,7 +254,7 @@ import {
   Trash2
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
-import { EventCategory, Partner, type DayStats } from '@/types'
+import { EventCategory, Partner, type DayStats, type TimeEvent } from '@/types'
 import { format, addWeeks, subWeeks, startOfToday, isSameDay } from 'date-fns'
 import { es } from 'date-fns/locale'
 
@@ -289,7 +289,7 @@ const showDayDetail = (dayStats: DayStats) => {
   selectedDayStats.value = dayStats
 }
 
-const getEventBorderColor = (event: any) => {
+const getEventBorderColor = (event: TimeEvent) => {
   if (event.partner === Partner.MARISA) {
     return 'border-pink-400 bg-pink-50'
   } else if (event.partner === Partner.SARA) {
@@ -299,12 +299,12 @@ const getEventBorderColor = (event: any) => {
   }
 }
 
-const getEventDuration = (event: any) => {
+const getEventDuration = (event: TimeEvent) => {
   const duration = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
   return Math.round(duration * 10) / 10
 }
 
-const editEvent = (event: any) => {
+const editEvent = (event: TimeEvent) => {
   // Por ahora, mostrar un alert indicando que se debe ir a la vista diaria para editar
   alert('Para editar eventos, ve a la vista diaria del día correspondiente')
 }
