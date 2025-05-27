@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 💕 TimeLove
 
 Una aplicación web moderna para gestionar el tiempo compartido en relaciones poliamorosas, optimizada para dispositivos móviles.
@@ -202,7 +201,3 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 ---
 
 💕 **Hecho con amor para gestionar el amor** 💕
-=======
-# timeLove
-timeLove app
->>>>>>> d196cc5d8b62a6bc4a4096642ef35c5021f629a7

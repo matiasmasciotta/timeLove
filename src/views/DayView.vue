@@ -1,16 +1,16 @@
 <template>
   <div class="p-4 space-y-6">
     <!-- Date Navigation -->
-    <div class="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm transform transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
+    <div class="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm">
       <button 
         @click="previousDay"
-        class="p-2 text-gray-600 hover:text-pink-600 transition-all duration-200 transform hover:scale-110 hover:-translate-x-1"
+        class="p-2 text-gray-600 hover:text-pink-600 transition-colors duration-200"
       >
         <ChevronLeft class="w-6 h-6" />
       </button>
       
       <div class="text-center">
-        <h2 class="text-lg font-bold text-gray-800 transition-all duration-200">
+        <h2 class="text-lg font-bold text-gray-800">
           {{ format(selectedDate, 'EEEE', { locale: es }) }}
         </h2>
         <p class="text-sm text-gray-600">
@@ -20,7 +20,7 @@
       
       <button 
         @click="nextDay"
-        class="p-2 text-gray-600 hover:text-pink-600 transition-all duration-200 transform hover:scale-110 hover:translate-x-1"
+        class="p-2 text-gray-600 hover:text-pink-600 transition-colors duration-200"
       >
         <ChevronRight class="w-6 h-6" />
       </button>
@@ -30,7 +30,7 @@
     <div class="flex justify-center">
       <button
         @click="goToToday"
-        class="px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 transition-all duration-200 transform hover:scale-105 hover:shadow-md"
+        class="px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 transition-colors duration-200"
       >
         Hoy
       </button>
@@ -38,23 +38,23 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-2 gap-4">
-      <div class="bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-4 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+      <div class="bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-4">
         <div class="flex items-center space-x-2 mb-2">
           <Heart class="w-5 h-5 text-pink-600 animate-pulse" />
           <span class="text-sm font-medium text-pink-800">Marisa</span>
         </div>
-        <p class="text-2xl font-bold text-pink-700 transition-all duration-300">
+        <p class="text-2xl font-bold text-pink-700">
           {{ Math.round(dayStats.marisaPercentage) }}%
         </p>
         <p class="text-xs text-pink-600">del tiempo total</p>
       </div>
       
-      <div class="bg-gradient-to-br from-red-100 to-pink-100 rounded-xl p-4 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+      <div class="bg-gradient-to-br from-red-100 to-pink-100 rounded-xl p-4">
         <div class="flex items-center space-x-2 mb-2">
           <Heart class="w-5 h-5 text-red-600 animate-pulse" />
           <span class="text-sm font-medium text-red-800">Sara</span>
         </div>
-        <p class="text-2xl font-bold text-red-700 transition-all duration-300">
+        <p class="text-2xl font-bold text-red-700">
           {{ Math.round(dayStats.saraPercentage) }}%
         </p>
         <p class="text-xs text-red-600">del tiempo total</p>
@@ -62,16 +62,16 @@
     </div>
 
     <!-- Category Breakdown -->
-    <div class="bg-white rounded-xl p-4 shadow-sm transform transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
+    <div class="bg-white rounded-xl p-4 shadow-sm">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Resumen por categorías</h3>
       <div class="space-y-3">
         <div 
           v-for="(hours, category) in dayStats.categoryBreakdown" 
           :key="category"
-          class="flex items-center justify-between transform transition-all duration-200 hover:scale-[1.02] hover:bg-gray-50 rounded-lg p-2"
+          class="flex items-center justify-between hover:bg-gray-50 rounded-lg p-2 transition-colors duration-200"
         >
           <div class="flex items-center space-x-3">
-            <div :class="getCategoryColor(category)" class="w-3 h-3 rounded-full transition-all duration-200 hover:scale-125"></div>
+            <div :class="getCategoryColor(category)" class="w-3 h-3 rounded-full"></div>
             <span class="text-sm text-gray-700">{{ category }}</span>
           </div>
           <span class="text-sm font-medium text-gray-800">{{ hours }}h</span>
@@ -80,7 +80,7 @@
     </div>
 
     <!-- Events Timeline -->
-    <div class="bg-white rounded-xl p-4 shadow-sm transform transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
+    <div class="bg-white rounded-xl p-4 shadow-sm">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Eventos del día</h3>
       
       <div v-if="dayStats.events.length === 0" class="text-center py-8">
@@ -90,12 +90,9 @@
       
       <div v-else class="space-y-3">
         <TransitionGroup
-          enter-active-class="transition-all duration-300 ease-out"
-          enter-from-class="opacity-0 translate-y-4"
-          enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition-all duration-200 ease-in"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 translate-y-4"
+          enter-active-class="transition-opacity duration-200 ease-out"
+          enter-from-class="opacity-0"
+          enter-to-class="opacity-100"
           appear
           tag="div"
           class="space-y-3"
@@ -103,7 +100,7 @@
           <div 
             v-for="(event, index) in sortedEvents" 
             :key="event.id"
-            class="border-l-4 pl-4 py-3 rounded-r-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-md"
+            class="border-l-4 pl-4 py-3 rounded-r-lg transition-colors duration-200"
             :class="getEventBorderColor(event)"
             :style="{ animationDelay: `${index * 100}ms` }"
           >
@@ -127,7 +124,7 @@
               </div>
               <button 
                 @click="deleteEvent(event.id)"
-                class="text-gray-400 hover:text-red-500 transition-all duration-200 ml-2 transform hover:scale-110 hover:rotate-12"
+                class="text-gray-400 hover:text-red-500 transition-colors duration-200 ml-2"
               >
                 <Trash2 class="w-4 h-4" />
               </button>
@@ -175,8 +172,12 @@ const goToToday = () => {
 }
 
 const deleteEvent = (id: string) => {
+  console.log('Intentando eliminar evento con ID:', id)
+  console.log('Eventos antes de eliminar:', eventsStore.events.length)
+  
   if (confirm('¿Estás seguro de que quieres eliminar este evento?')) {
     eventsStore.deleteEvent(id)
+    console.log('Eventos después de eliminar:', eventsStore.events.length)
   }
 }
 

@@ -35,11 +35,23 @@ export const useEventsStore = defineStore('events', () => {
     const stored = localStorage.getItem('timelove-events')
     if (stored) {
       const parsed = JSON.parse(stored)
-      events.value = parsed.map((event: any) => ({
+      const eventsWithDates = parsed.map((event: any) => ({
         ...event,
         startDate: new Date(event.startDate),
         endDate: new Date(event.endDate)
       }))
+      
+      // Eliminar duplicados basados en ID
+      const uniqueEvents = eventsWithDates.filter((event: TimeEvent, index: number, self: TimeEvent[]) => 
+        index === self.findIndex(e => e.id === event.id)
+      )
+      
+      events.value = uniqueEvents
+      
+      // Si se encontraron duplicados, guardar la versión limpia
+      if (uniqueEvents.length !== eventsWithDates.length) {
+        saveEvents()
+      }
     }
   }
 
@@ -52,7 +64,7 @@ export const useEventsStore = defineStore('events', () => {
   const addEvent = (event: Omit<TimeEvent, 'id'>) => {
     const newEvent: TimeEvent = {
       ...event,
-      id: Date.now().toString()
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     }
     events.value.push(newEvent)
     saveEvents()
@@ -186,6 +198,14 @@ export const useEventsStore = defineStore('events', () => {
     }
   }
 
+  // Limpiar todos los eventos
+  const clearAllEvents = () => {
+    console.log('Limpiando todos los eventos...')
+    events.value = []
+    saveEvents()
+    console.log('Eventos limpiados. Total actual:', events.value.length)
+  }
+
   // Inicializar store
   loadEvents()
 
@@ -197,6 +217,7 @@ export const useEventsStore = defineStore('events', () => {
     getEventsForDay,
     getDayStats,
     getWeekStats,
-    getMonthStats
+    getMonthStats,
+    clearAllEvents
   }
 }) 
