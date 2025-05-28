@@ -136,6 +136,9 @@
             <span v-if="dayStats.categoryBreakdown[EventCategory.EFICAZ] > 0">
               ❤️ {{ Math.round(dayStats.categoryBreakdown[EventCategory.EFICAZ] * 10) / 10 }}h
             </span>
+            <span v-if="dayStats.categoryBreakdown[EventCategory.ACT_ELLAS] > 0">
+              💃 {{ Math.round(dayStats.categoryBreakdown[EventCategory.ACT_ELLAS] * 10) / 10 }}h
+            </span>
           </div>
         </div>
       </div>

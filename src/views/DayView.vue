@@ -261,6 +261,7 @@
               <option :value="EventCategory.LABORAL">{{ EventCategory.LABORAL }}</option>
               <option :value="EventCategory.GYM">{{ EventCategory.GYM }}</option>
               <option :value="EventCategory.EFICAZ">{{ EventCategory.EFICAZ }}</option>
+              <option :value="EventCategory.ACT_ELLAS">{{ EventCategory.ACT_ELLAS }}</option>
             </select>
           </div>
 
@@ -413,7 +414,8 @@ const getCategoryColor = (category: EventCategory) => {
     [EventCategory.DORMIR]: 'bg-blue-500',
     [EventCategory.LABORAL]: 'bg-green-500',
     [EventCategory.GYM]: 'bg-orange-500',
-    [EventCategory.EFICAZ]: 'bg-purple-500'
+    [EventCategory.EFICAZ]: 'bg-purple-500',
+    [EventCategory.ACT_ELLAS]: 'bg-pink-500'
   }
   return colors[category] || 'bg-gray-500'
 }

@@ -13,7 +13,8 @@ export enum EventCategory {
   DORMIR = 'TIEMPO DORMIR',
   LABORAL = 'TIEMPO LABORAL', 
   GYM = 'TIEMPO GYM',
-  EFICAZ = 'TIEMPO EFICAZ'
+  EFICAZ = 'TIEMPO EFICAZ',
+  ACT_ELLAS = 'TIEMPO ACT. ELLAS'
 }
 
 export enum TimeType {

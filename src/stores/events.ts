@@ -108,7 +108,8 @@ export const useEventsStore = defineStore('events', () => {
       [EventCategory.DORMIR]: 0,
       [EventCategory.LABORAL]: 0,
       [EventCategory.GYM]: 0,
-      [EventCategory.EFICAZ]: 0
+      [EventCategory.EFICAZ]: 0,
+      [EventCategory.ACT_ELLAS]: 0
     }
 
     dayEvents.forEach(event => {
@@ -122,23 +123,23 @@ export const useEventsStore = defineStore('events', () => {
         marisaHours += hours
         saraHours += hours
         
-        // Solo contar TIEMPO EFICAZ como "horas efectivas"
-        if (event.category === EventCategory.EFICAZ) {
+        // Solo contar TIEMPO EFICAZ y ACT_ELLAS como "horas efectivas"
+        if (event.category === EventCategory.EFICAZ || event.category === EventCategory.ACT_ELLAS) {
           marisaEffectiveHours += hours
           saraEffectiveHours += hours
         }
       } else if (event.partner === Partner.MARISA) {
         marisaHours += hours
         
-        // Solo contar TIEMPO EFICAZ como "horas efectivas"
-        if (event.category === EventCategory.EFICAZ) {
+        // Solo contar TIEMPO EFICAZ y ACT_ELLAS como "horas efectivas"
+        if (event.category === EventCategory.EFICAZ || event.category === EventCategory.ACT_ELLAS) {
           marisaEffectiveHours += hours
         }
       } else if (event.partner === Partner.SARA) {
         saraHours += hours
         
-        // Solo contar TIEMPO EFICAZ como "horas efectivas"
-        if (event.category === EventCategory.EFICAZ) {
+        // Solo contar TIEMPO EFICAZ y ACT_ELLAS como "horas efectivas"
+        if (event.category === EventCategory.EFICAZ || event.category === EventCategory.ACT_ELLAS) {
           saraEffectiveHours += hours
         }
       }

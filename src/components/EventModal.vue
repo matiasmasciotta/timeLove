@@ -104,9 +104,11 @@
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-150 hover:border-pink-300 hover:shadow-sm"
                   >
                     <option value="">Selecciona una categoría</option>
-                    <option v-for="category in categories" :key="category" :value="category">
-                      {{ category }}
-                    </option>
+                    <option :value="EventCategory.DORMIR">😴 {{ EventCategory.DORMIR }}</option>
+                    <option :value="EventCategory.LABORAL">💼 {{ EventCategory.LABORAL }}</option>
+                    <option :value="EventCategory.GYM">💪 {{ EventCategory.GYM }}</option>
+                    <option :value="EventCategory.EFICAZ">❤️ {{ EventCategory.EFICAZ }}</option>
+                    <option :value="EventCategory.ACT_ELLAS">💃 {{ EventCategory.ACT_ELLAS }}</option>
                   </select>
                 </div>
 
