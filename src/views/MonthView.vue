@@ -35,7 +35,7 @@
     </div>
 
     <!-- Monthly Stats -->
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-3 gap-3">
       <div class="bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-4">
         <div class="flex items-center space-x-2 mb-2">
           <Heart class="w-5 h-5 text-pink-600" />
@@ -45,7 +45,13 @@
           {{ Math.round(monthlyMarisaPercentage) }}%
         </p>
         <p class="text-xs text-pink-600">del tiempo total</p>
-        <div class="flex items-center space-x-1 mt-2">
+        <div class="flex items-center space-x-1 mt-1">
+          <Clock class="w-3 h-3 text-pink-500" />
+          <p class="text-sm font-medium text-pink-700">
+            {{ Math.round(monthStats.allMarisaHours * 10) / 10 }} horas totales
+          </p>
+        </div>
+        <div class="flex items-center space-x-1 mt-1">
           <Heart class="w-3 h-3 text-pink-500" />
           <p class="text-sm font-medium text-pink-700">
             {{ Math.round(monthStats.totalMarisaHours * 10) / 10 }} horas efectivas
@@ -62,19 +68,36 @@
           {{ Math.round(monthlySaraPercentage) }}%
         </p>
         <p class="text-xs text-red-600">del tiempo total</p>
-        <div class="flex items-center space-x-1 mt-2">
+        <div class="flex items-center space-x-1 mt-1">
+          <Clock class="w-3 h-3 text-red-500" />
+          <p class="text-sm font-medium text-red-700">
+            {{ Math.round(monthStats.allSaraHours * 10) / 10 }} horas totales
+          </p>
+        </div>
+        <div class="flex items-center space-x-1 mt-1">
           <Heart class="w-3 h-3 text-red-500" />
           <p class="text-sm font-medium text-red-700">
             {{ Math.round(monthStats.totalSaraHours * 10) / 10 }} horas efectivas
           </p>
         </div>
       </div>
+
+      <div class="bg-gradient-to-br from-gray-100 to-slate-100 rounded-xl p-4">
+        <div class="flex items-center space-x-2 mb-2">
+          <User class="w-5 h-5 text-gray-600" />
+          <span class="text-sm font-medium text-gray-800">Solo</span>
+        </div>
+        <p class="text-2xl font-bold text-gray-700">
+          {{ Math.round(monthStats.totalSoloHours * 10) / 10 }}h
+        </p>
+        <p class="text-xs text-gray-600">tiempo individual</p>
+      </div>
     </div>
 
     <!-- Monthly Summary -->
     <div class="bg-white rounded-xl p-4 shadow-sm">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Resumen mensual</h3>
-      <div class="grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-4 gap-3">
         <div class="text-center p-3 bg-pink-50 rounded-lg">
           <p class="text-sm text-pink-600">Total Marisa</p>
           <p class="text-xl font-bold text-pink-700">
@@ -88,8 +111,14 @@
           </p>
         </div>
         <div class="text-center p-3 bg-gray-50 rounded-lg">
-          <p class="text-sm text-gray-600">Total Mes</p>
+          <p class="text-sm text-gray-600">Tiempo Solo</p>
           <p class="text-xl font-bold text-gray-700">
+            {{ Math.round(monthStats.totalSoloHours * 10) / 10 }}h
+          </p>
+        </div>
+        <div class="text-center p-3 bg-slate-50 rounded-lg">
+          <p class="text-sm text-slate-600">Total Mes</p>
+          <p class="text-xl font-bold text-slate-700">
             {{ Math.round(monthStats.totalHours * 10) / 10 }}h
           </p>
         </div>
@@ -125,7 +154,7 @@
           </div>
           
           <!-- Weekly percentages -->
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-3 gap-2">
             <div class="text-center p-2 bg-pink-50 rounded">
               <p class="text-xs text-pink-600">Marisa</p>
               <p class="text-lg font-bold text-pink-700">
@@ -145,6 +174,13 @@
                 <Heart class="w-2 h-2 text-red-500" />
                 <p class="text-xs text-red-600">{{ Math.round(week.totalSaraHours * 10) / 10 }} horas efectivas</p>
               </div>
+            </div>
+            <div class="text-center p-2 bg-gray-50 rounded">
+              <p class="text-xs text-gray-600">Solo</p>
+              <p class="text-lg font-bold text-gray-700">
+                {{ Math.round(week.totalSoloHours * 10) / 10 }}h
+              </p>
+              <p class="text-xs text-gray-600">tiempo individual</p>
             </div>
           </div>
         </div>
@@ -180,7 +216,7 @@
         <!-- Modal Content -->
         <div class="p-6 space-y-4">
           <!-- Week Stats -->
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-3 gap-3">
             <div class="text-center p-3 bg-pink-50 rounded-lg">
               <p class="text-sm text-pink-600">Marisa</p>
               <p class="text-xl font-bold text-pink-700">
@@ -202,6 +238,13 @@
                 <Heart class="w-2 h-2 text-red-500" />
                 <p class="text-xs text-red-600">{{ Math.round(selectedWeekStats.totalSaraHours * 10) / 10 }}h efectivas</p>
               </div>
+            </div>
+            <div class="text-center p-3 bg-gray-50 rounded-lg">
+              <p class="text-sm text-gray-600">Solo</p>
+              <p class="text-xl font-bold text-gray-700">
+                {{ Math.round(selectedWeekStats.totalSoloHours * 10) / 10 }}h
+              </p>
+              <p class="text-xs text-gray-600">tiempo individual</p>
             </div>
           </div>
 
@@ -242,6 +285,12 @@
                       <p class="text-xs text-red-600">{{ Math.round(dayStats.saraHours * 10) / 10 }}h</p>
                     </div>
                   </div>
+                  <div class="text-center">
+                    <p class="text-xs text-gray-600">Solo</p>
+                    <p class="text-sm font-bold text-gray-700">
+                      {{ Math.round(dayStats.soloHours * 10) / 10 }}h
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -258,7 +307,9 @@ import {
   ChevronLeft, 
   ChevronRight, 
   Heart,
-  X
+  X,
+  User,
+  Clock
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
 import { EventCategory, type WeekStats } from '@/types'

@@ -36,7 +36,7 @@
     </div>
 
     <!-- Weekly Stats -->
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-3 gap-3">
       <div class="bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-4">
         <div class="flex items-center space-x-2 mb-2">
           <Heart class="w-5 h-5 text-pink-600" />
@@ -46,7 +46,13 @@
           {{ Math.round(weekStats.totalMarisaPercentage) }}%
         </p>
         <p class="text-xs text-pink-600">promedio semanal</p>
-        <div class="flex items-center space-x-1 mt-2">
+        <div class="flex items-center space-x-1 mt-1">
+          <Clock class="w-3 h-3 text-pink-500" />
+          <p class="text-sm font-medium text-pink-700">
+            {{ Math.round(getWeekMarisaTotalHours(weekStats) * 10) / 10 }} horas totales
+          </p>
+        </div>
+        <div class="flex items-center space-x-1 mt-1">
           <Heart class="w-3 h-3 text-pink-500" />
           <p class="text-sm font-medium text-pink-700">
             {{ Math.round(weekStats.totalMarisaHours * 10) / 10 }} horas efectivas
@@ -63,12 +69,29 @@
           {{ Math.round(weekStats.totalSaraPercentage) }}%
         </p>
         <p class="text-xs text-red-600">promedio semanal</p>
-        <div class="flex items-center space-x-1 mt-2">
+        <div class="flex items-center space-x-1 mt-1">
+          <Clock class="w-3 h-3 text-red-500" />
+          <p class="text-sm font-medium text-red-700">
+            {{ Math.round(getWeekSaraTotalHours(weekStats) * 10) / 10 }} horas totales
+          </p>
+        </div>
+        <div class="flex items-center space-x-1 mt-1">
           <Heart class="w-3 h-3 text-red-500" />
           <p class="text-sm font-medium text-red-700">
             {{ Math.round(weekStats.totalSaraHours * 10) / 10 }} horas efectivas
           </p>
         </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-gray-100 to-slate-100 rounded-xl p-4">
+        <div class="flex items-center space-x-2 mb-2">
+          <User class="w-5 h-5 text-gray-600" />
+          <span class="text-sm font-medium text-gray-800">Solo</span>
+        </div>
+        <p class="text-2xl font-bold text-gray-700">
+          {{ Math.round(weekStats.totalSoloHours * 10) / 10 }}h
+        </p>
+        <p class="text-xs text-gray-600">tiempo individual</p>
       </div>
     </div>
 
@@ -254,7 +277,9 @@ import {
   Heart,
   X,
   Edit,
-  Trash2
+  Trash2,
+  User,
+  Clock
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
 import { EventCategory, Partner, type DayStats, type TimeEvent } from '@/types'
@@ -297,6 +322,8 @@ const getEventBorderColor = (event: TimeEvent) => {
     return 'border-pink-400 bg-pink-50'
   } else if (event.partner === Partner.SARA) {
     return 'border-red-400 bg-red-50'
+  } else if (event.partner === Partner.SOLO) {
+    return 'border-gray-400 bg-gray-50'
   } else {
     return 'border-purple-400 bg-purple-50'
   }
@@ -316,5 +343,37 @@ const deleteEvent = (eventId: string) => {
   if (confirm('¿Estás seguro de que quieres eliminar este evento?')) {
     eventsStore.deleteEvent(eventId)
   }
+}
+
+const getWeekMarisaTotalHours = (weekStats: any) => {
+  // Calcular todas las horas de Marisa en la semana (todas las categorías)
+  let totalHours = 0
+  weekStats.days.forEach((day: any) => {
+    day.events.forEach((event: any) => {
+      const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+      if (event.timeType === 'TIEMPO COMPARTIDO' && event.partner === 'Ambas') {
+        totalHours += hours
+      } else if (event.partner === 'Marisa') {
+        totalHours += hours
+      }
+    })
+  })
+  return totalHours
+}
+
+const getWeekSaraTotalHours = (weekStats: any) => {
+  // Calcular todas las horas de Sara en la semana (todas las categorías)
+  let totalHours = 0
+  weekStats.days.forEach((day: any) => {
+    day.events.forEach((event: any) => {
+      const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+      if (event.timeType === 'TIEMPO COMPARTIDO' && event.partner === 'Ambas') {
+        totalHours += hours
+      } else if (event.partner === 'Sara') {
+        totalHours += hours
+      }
+    })
+  })
+  return totalHours
 }
 </script> 

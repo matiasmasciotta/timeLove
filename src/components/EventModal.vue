@@ -243,7 +243,7 @@ const emit = defineEmits<{
 const eventsStore = useEventsStore()
 
 const categories = Object.values(EventCategory)
-const individualPartners = [Partner.MARISA, Partner.SARA]
+const individualPartners = [Partner.MARISA, Partner.SARA, Partner.SOLO]
 
 const form = ref({
   title: '',

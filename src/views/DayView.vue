@@ -37,7 +37,7 @@
     </div>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-3 gap-3">
       <div class="bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl p-4">
         <div class="flex items-center space-x-2 mb-2">
           <Heart class="w-5 h-5 text-pink-600 animate-pulse" />
@@ -47,7 +47,13 @@
           {{ Math.round(dayStats.marisaPercentage) }}%
         </p>
         <p class="text-xs text-pink-600">del tiempo total</p>
-        <div class="flex items-center space-x-1 mt-2">
+        <div class="flex items-center space-x-1 mt-1">
+          <Clock class="w-3 h-3 text-pink-500" />
+          <p class="text-sm font-medium text-pink-700">
+            {{ Math.round(getMarisaTotalHours(dayStats) * 10) / 10 }} horas totales
+          </p>
+        </div>
+        <div class="flex items-center space-x-1 mt-1">
           <Heart class="w-3 h-3 text-pink-500" />
           <p class="text-sm font-medium text-pink-700">
             {{ Math.round(dayStats.marisaHours * 10) / 10 }} horas efectivas
@@ -64,12 +70,29 @@
           {{ Math.round(dayStats.saraPercentage) }}%
         </p>
         <p class="text-xs text-red-600">del tiempo total</p>
-        <div class="flex items-center space-x-1 mt-2">
+        <div class="flex items-center space-x-1 mt-1">
+          <Clock class="w-3 h-3 text-red-500" />
+          <p class="text-sm font-medium text-red-700">
+            {{ Math.round(getSaraTotalHours(dayStats) * 10) / 10 }} horas totales
+          </p>
+        </div>
+        <div class="flex items-center space-x-1 mt-1">
           <Heart class="w-3 h-3 text-red-500" />
           <p class="text-sm font-medium text-red-700">
             {{ Math.round(dayStats.saraHours * 10) / 10 }} horas efectivas
           </p>
         </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-gray-100 to-slate-100 rounded-xl p-4">
+        <div class="flex items-center space-x-2 mb-2">
+          <User class="w-5 h-5 text-gray-600" />
+          <span class="text-sm font-medium text-gray-800">Solo</span>
+        </div>
+        <p class="text-2xl font-bold text-gray-700">
+          {{ Math.round(dayStats.soloHours * 10) / 10 }}h
+        </p>
+        <p class="text-xs text-gray-600">tiempo individual</p>
       </div>
     </div>
 
@@ -87,6 +110,15 @@
             <span class="text-sm text-gray-700">{{ category }}</span>
           </div>
           <span class="text-sm font-medium text-gray-800">{{ Math.round(hours * 10) / 10 }}h</span>
+        </div>
+        
+        <!-- Tiempo Solo -->
+        <div class="flex items-center justify-between hover:bg-gray-50 rounded-lg p-2 transition-colors duration-200 border-t pt-3">
+          <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full bg-gray-500"></div>
+            <span class="text-sm text-gray-700 font-medium">Tiempo Solo</span>
+          </div>
+          <span class="text-sm font-medium text-gray-800">{{ Math.round(dayStats.soloHours * 10) / 10 }}h</span>
         </div>
       </div>
     </div>
@@ -292,6 +324,7 @@
             >
               <option :value="Partner.MARISA">{{ Partner.MARISA }}</option>
               <option :value="Partner.SARA">{{ Partner.SARA }}</option>
+              <option :value="Partner.SOLO">{{ Partner.SOLO }}</option>
             </select>
           </div>
 
@@ -347,7 +380,9 @@ import {
   Calendar,
   Trash2,
   Edit,
-  X
+  X,
+  User,
+  Clock
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
 import { EventCategory, Partner, TimeType, type TimeEvent } from '@/types'
@@ -425,6 +460,8 @@ const getEventBorderColor = (event: TimeEvent) => {
     return 'border-pink-400 bg-pink-50'
   } else if (event.partner === Partner.SARA) {
     return 'border-red-400 bg-red-50'
+  } else if (event.partner === Partner.SOLO) {
+    return 'border-gray-400 bg-gray-50'
   } else {
     return 'border-purple-400 bg-purple-50'
   }
@@ -503,5 +540,33 @@ const cancelEdit = () => {
     timeType: TimeType.INDIVIDUAL,
     partner: Partner.MARISA
   }
+}
+
+const getMarisaTotalHours = (stats: any) => {
+  // Calcular todas las horas de Marisa (todas las categorías)
+  let totalHours = 0
+  stats.events.forEach((event: any) => {
+    const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+    if (event.timeType === 'TIEMPO COMPARTIDO' && event.partner === 'Ambas') {
+      totalHours += hours
+    } else if (event.partner === 'Marisa') {
+      totalHours += hours
+    }
+  })
+  return totalHours
+}
+
+const getSaraTotalHours = (stats: any) => {
+  // Calcular todas las horas de Sara (todas las categorías)
+  let totalHours = 0
+  stats.events.forEach((event: any) => {
+    const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+    if (event.timeType === 'TIEMPO COMPARTIDO' && event.partner === 'Ambas') {
+      totalHours += hours
+    } else if (event.partner === 'Sara') {
+      totalHours += hours
+    }
+  })
+  return totalHours
 }
 </script> 
