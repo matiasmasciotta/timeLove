@@ -23,41 +23,142 @@ Una aplicación web moderna para gestionar el tiempo compartido en relaciones po
 - **Lucide Vue** - Iconos SVG optimizados
 - **Vite** - Build tool ultrarrápido
 
-## 🚀 Instalación
+## 🚀 Instalación y Desarrollo
 
 ### Prerrequisitos
 
-- Node.js 18+ 
-- npm o yarn
+- **Node.js 18+** ([Descargar aquí](https://nodejs.org/))
+- **npm** (incluido con Node.js) o **yarn**
+- **Git** ([Descargar aquí](https://git-scm.com/))
 
-### Pasos
+### 1. Clonar el repositorio
 
-1. **Clonar el repositorio**
+```bash
+git clone https://github.com/matiasmasciotta/timeLove.git
+cd timeLove
+```
+
+### 2. Instalar dependencias
+
+```bash
+# Con npm
+npm install
+
+# O con yarn
+yarn install
+```
+
+### 3. Ejecutar en modo desarrollo
+
+```bash
+# Con npm
+npm run dev
+
+# O con yarn
+yarn dev
+```
+
+### 4. Abrir en el navegador
+
+La aplicación estará disponible en:
+```
+http://localhost:5173
+```
+
+## 📦 Scripts Disponibles
+
+```bash
+# Desarrollo - Inicia servidor de desarrollo con hot reload
+npm run dev
+
+# Build - Genera archivos optimizados para producción
+npm run build
+
+# Preview - Previsualiza el build de producción localmente
+npm run preview
+
+# Linting - Revisa y corrige errores de código
+npm run lint
+
+# Type checking - Verifica tipos TypeScript
+npm run type-check
+```
+
+## 🌐 Deploy en Producción con Vercel
+
+### Opción 1: Deploy Automático (Recomendado)
+
+1. **Sube tu código a GitHub**
    ```bash
-   git clone https://github.com/matiasmasciotta/timeLove.git
-   cd timeLove
+   git add .
+   git commit -m "feat: initial commit"
+   git push origin main
    ```
 
-2. **Instalar dependencias**
+2. **Conecta con Vercel**
+   - Ve a [vercel.com](https://vercel.com)
+   - Haz clic en "New Project"
+   - Conecta tu cuenta de GitHub
+   - Selecciona el repositorio `timeLove`
+   - Vercel detectará automáticamente la configuración de Vue
+
+3. **Deploy automático**
+   - Cada push a `main` desplegará automáticamente
+   - Vercel generará una URL única para tu app
+
+### Opción 2: Deploy Manual con Vercel CLI
+
+1. **Instalar Vercel CLI**
    ```bash
-   npm install
-   # o
-   yarn install
+   npm i -g vercel
    ```
 
-3. **Ejecutar en desarrollo**
+2. **Login en Vercel**
    ```bash
-   npm run dev
-   # o
-   yarn dev
+   vercel login
    ```
 
-4. **Abrir en el navegador**
-   ```
-   http://localhost:5173
+3. **Deploy a producción**
+   ```bash
+   # Primera vez (configuración inicial)
+   vercel
+
+   # Deploy a producción
+   vercel --prod
    ```
 
-## 📱 Uso
+### Configuración importante para Vercel
+
+El proyecto incluye un archivo `vercel.json` que soluciona el problema de rutas SPA:
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+```
+
+Esto asegura que todas las rutas (como `/week`, `/month`) funcionen correctamente al refrescar la página.
+
+### Variables de entorno (si las necesitas)
+
+Si tu app requiere variables de entorno:
+
+1. **Crea archivo `.env.local`** (no incluir en git)
+   ```bash
+   VITE_API_URL=https://tu-api.com
+   ```
+
+2. **Configura en Vercel**
+   - Ve a tu proyecto en Vercel Dashboard
+   - Settings → Environment Variables
+   - Agrega las variables necesarias
+
+## 📱 Uso de la Aplicación
 
 ### Navegación Principal
 
@@ -141,39 +242,29 @@ src/
 - Duración total de eventos
 - Distribución por categorías
 
-## 🔧 Scripts Disponibles
+## 🔧 Solución de Problemas
 
+### Error 404 al refrescar en producción
+✅ **Solucionado** con el archivo `vercel.json` incluido
+
+### Problemas de instalación
 ```bash
-# Desarrollo
-npm run dev
+# Limpiar cache de npm
+npm cache clean --force
 
-# Build para producción
-npm run build
+# Eliminar node_modules y reinstalar
+rm -rf node_modules package-lock.json
+npm install
+```
 
-# Preview del build
-npm run preview
-
-# Linting
-npm run lint
-
-# Type checking
+### Problemas de build
+```bash
+# Verificar tipos TypeScript
 npm run type-check
+
+# Verificar linting
+npm run lint
 ```
-
-## 🌐 Deploy
-
-### Build para Producción
-```bash
-npm run build
-```
-
-Los archivos optimizados se generan en la carpeta `dist/`.
-
-### Opciones de Deploy
-- **Netlify**: Conecta el repo y deploy automático
-- **Vercel**: Import desde GitHub
-- **GitHub Pages**: Usando GitHub Actions
-- **Servidor propio**: Subir contenido de `dist/`
 
 ## 🤝 Contribuir
 
