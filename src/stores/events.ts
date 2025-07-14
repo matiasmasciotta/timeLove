@@ -100,6 +100,9 @@ export const useEventsStore = defineStore('events', () => {
   // Calcular estadísticas de un día
   const getDayStats = (date: Date): DayStats => {
     const dayEvents = getEventsForDay(date)
+    const dayStart = startOfDay(date)
+    const dayEnd = endOfDay(date)
+    
     let marisaHours = 0
     let saraHours = 0
     let soloHours = 0  // Nuevo contador para tiempo solo
@@ -114,7 +117,10 @@ export const useEventsStore = defineStore('events', () => {
     }
 
     dayEvents.forEach(event => {
-      const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+      // Calcular solo las horas que ocurren dentro del día específico
+      const eventStart = event.startDate > dayStart ? event.startDate : dayStart
+      const eventEnd = event.endDate < dayEnd ? event.endDate : dayEnd
+      const hours = (eventEnd.getTime() - eventStart.getTime()) / (1000 * 60 * 60)
       
       // Calcular horas por categoría
       categoryBreakdown[event.category] += hours
@@ -185,26 +191,42 @@ export const useEventsStore = defineStore('events', () => {
     
     // Para el porcentaje, usar todas las horas (no solo efectivas) pero excluyendo tiempo SOLO
     const allMarisaHours = days.reduce((sum, day) => {
+      const dayStart = startOfDay(day.date)
+      const dayEnd = endOfDay(day.date)
+      
       return sum + day.events.reduce((eventSum, event) => {
+        // Calcular solo las horas que ocurren dentro del día específico
+        const eventStart = event.startDate > dayStart ? event.startDate : dayStart
+        const eventEnd = event.endDate < dayEnd ? event.endDate : dayEnd
+        const hours = (eventEnd.getTime() - eventStart.getTime()) / (1000 * 60 * 60)
+        
         if (event.partner === Partner.SOLO) {
           return eventSum // No contar tiempo solo
         } else if (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS) {
-          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+          return eventSum + hours
         } else if (event.partner === Partner.MARISA) {
-          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+          return eventSum + hours
         }
         return eventSum
       }, 0)
     }, 0)
     
     const allSaraHours = days.reduce((sum, day) => {
+      const dayStart = startOfDay(day.date)
+      const dayEnd = endOfDay(day.date)
+      
       return sum + day.events.reduce((eventSum, event) => {
+        // Calcular solo las horas que ocurren dentro del día específico
+        const eventStart = event.startDate > dayStart ? event.startDate : dayStart
+        const eventEnd = event.endDate < dayEnd ? event.endDate : dayEnd
+        const hours = (eventEnd.getTime() - eventStart.getTime()) / (1000 * 60 * 60)
+        
         if (event.partner === Partner.SOLO) {
           return eventSum // No contar tiempo solo
         } else if (event.timeType === TimeType.COMPARTIDO && event.partner === Partner.AMBAS) {
-          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+          return eventSum + hours
         } else if (event.partner === Partner.SARA) {
-          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+          return eventSum + hours
         }
         return eventSum
       }, 0)
@@ -212,9 +234,17 @@ export const useEventsStore = defineStore('events', () => {
 
     // Calcular tiempo solo total para incluir en el total general
     const allSoloHours = days.reduce((sum, day) => {
+      const dayStart = startOfDay(day.date)
+      const dayEnd = endOfDay(day.date)
+      
       return sum + day.events.reduce((eventSum, event) => {
+        // Calcular solo las horas que ocurren dentro del día específico
+        const eventStart = event.startDate > dayStart ? event.startDate : dayStart
+        const eventEnd = event.endDate < dayEnd ? event.endDate : dayEnd
+        const hours = (eventEnd.getTime() - eventStart.getTime()) / (1000 * 60 * 60)
+        
         if (event.partner === Partner.SOLO) {
-          return eventSum + (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+          return eventSum + hours
         }
         return eventSum
       }, 0)
@@ -263,8 +293,14 @@ export const useEventsStore = defineStore('events', () => {
     
     weeks.forEach(week => {
       week.days.forEach(day => {
+        const dayStart = startOfDay(day.date)
+        const dayEnd = endOfDay(day.date)
+        
         day.events.forEach(event => {
-          const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+          // Calcular solo las horas que ocurren dentro del día específico
+          const eventStart = event.startDate > dayStart ? event.startDate : dayStart
+          const eventEnd = event.endDate < dayEnd ? event.endDate : dayEnd
+          const hours = (eventEnd.getTime() - eventStart.getTime()) / (1000 * 60 * 60)
           
           if (event.partner === Partner.SOLO) {
             allSoloHours += hours

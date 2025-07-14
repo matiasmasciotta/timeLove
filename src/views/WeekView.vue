@@ -283,7 +283,7 @@ import {
 } from 'lucide-vue-next'
 import { useEventsStore } from '@/stores/events'
 import { EventCategory, Partner, type DayStats, type TimeEvent } from '@/types'
-import { format, addWeeks, subWeeks, startOfToday, isSameDay } from 'date-fns'
+import { format, addWeeks, subWeeks, startOfToday, isSameDay, startOfDay, endOfDay } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 const eventsStore = useEventsStore()
@@ -349,8 +349,15 @@ const getWeekMarisaTotalHours = (weekStats: any) => {
   // Calcular todas las horas de Marisa en la semana (todas las categorías)
   let totalHours = 0
   weekStats.days.forEach((day: any) => {
+    const dayStart = startOfDay(day.date)
+    const dayEnd = endOfDay(day.date)
+    
     day.events.forEach((event: any) => {
-      const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+      // Calcular solo las horas que ocurren dentro del día específico
+      const eventStart = event.startDate > dayStart ? event.startDate : dayStart
+      const eventEnd = event.endDate < dayEnd ? event.endDate : dayEnd
+      const hours = (eventEnd.getTime() - eventStart.getTime()) / (1000 * 60 * 60)
+      
       if (event.timeType === 'TIEMPO COMPARTIDO' && event.partner === 'Ambas') {
         totalHours += hours
       } else if (event.partner === 'Marisa') {
@@ -365,8 +372,15 @@ const getWeekSaraTotalHours = (weekStats: any) => {
   // Calcular todas las horas de Sara en la semana (todas las categorías)
   let totalHours = 0
   weekStats.days.forEach((day: any) => {
+    const dayStart = startOfDay(day.date)
+    const dayEnd = endOfDay(day.date)
+    
     day.events.forEach((event: any) => {
-      const hours = (event.endDate.getTime() - event.startDate.getTime()) / (1000 * 60 * 60)
+      // Calcular solo las horas que ocurren dentro del día específico
+      const eventStart = event.startDate > dayStart ? event.startDate : dayStart
+      const eventEnd = event.endDate < dayEnd ? event.endDate : dayEnd
+      const hours = (eventEnd.getTime() - eventStart.getTime()) / (1000 * 60 * 60)
+      
       if (event.timeType === 'TIEMPO COMPARTIDO' && event.partner === 'Ambas') {
         totalHours += hours
       } else if (event.partner === 'Sara') {
